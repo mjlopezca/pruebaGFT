@@ -1,0 +1,41 @@
+version: '3'
+services:
+  eureka:
+    image: eureka
+    ports:
+      - "8761:8761"
+  zuul:
+    image: zuul
+    ports:
+      - "8080:8080"
+    links:
+      - eureka
+    environment:
+      - eureka.port.8761.tcp.addr=eureka       
+  configserver:
+    image: cloud   
+    ports:
+      - "8888:8888"
+  mongo:
+    image: mongo    
+    ports:
+      - "27017:27017"
+  persona-rest:
+    image: persona_rest
+    links:
+     - eureka
+     - configserver
+     - mongo
+    environment:
+      - configserver.port.8888.tcp.addr=configserver
+      - eureka.port.8761.tcp.addr=eureka
+      - mongo.port.27017.tcp.addr=mongo
+  persona-feign:
+    image: persona-feign 
+    links:
+     - eureka
+     - configserver  
+    environment:
+      - configserver.port.8888.tcp.addr=configserver
+      - eureka.port.8761.tcp.addr=eureka  
+ 

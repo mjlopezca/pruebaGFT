@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: persona-rest
+  cloud:
+    config:    
+      uri: http://${configserver.port.8888.tcp.addr:localhost}:8888/
+      failFast: true
